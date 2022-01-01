@@ -22,7 +22,7 @@ public class LoginController {
         user.setFirstName("abhishek");
         user.setLastName("vishnoi");
         user.setEmail("abhishek.vishnoi@hotmail.com");
-        user.setPassword("password1");
+        user.setPassword("password10");
         users.add(user);
 
     }

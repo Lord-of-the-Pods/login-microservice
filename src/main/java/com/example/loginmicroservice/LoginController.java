@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @CrossOrigin
 @RestController
@@ -90,7 +92,18 @@ public class LoginController {
     @GetMapping("/forgetPassword")
     public String forgetPassword(@RequestParam String email){
         logger.info("an email has been sent to reset the password" + email);
-        return "email sent";
+
+        String regex = "^(.+)@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(email);
+        if(matcher.matches()){
+            return "email sent";
+        }
+        else{
+            return "incorrect email entered";
+        }
+
     }
 
 

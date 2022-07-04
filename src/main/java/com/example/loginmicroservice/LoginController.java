@@ -87,5 +87,11 @@ public class LoginController {
         return users;
     }
 
+    @GetMapping("/forgetPassword")
+    public String forgetPassword(@RequestParam String email){
+        logger.info("an email has been sent to reset the password" + email);
+        return "email sent";
+    }
+
 
 }

@@ -109,13 +109,10 @@ public class LoginController {
     @PostMapping("/changePassword")
     public String changePassword(@RequestBody ChangePassword password){
         logger.info("a request received to login a user..!!");
-
             if((password.getOldPassword().equals(password.getNewPassword()))) {
                 logger.info("password change is successful");
-                return "password not changed";
+                return "password not changed data";
             }
         return "password changed";
     }
-
-
 }

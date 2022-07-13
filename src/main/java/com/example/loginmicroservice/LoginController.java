@@ -21,7 +21,7 @@ public class LoginController {
 
     static{
         User user = new User() ;
-        user.setFirstName("abhishek");
+        user.setFirstName("arushi");
         user.setLastName("vishnoi");
         user.setEmail("abhishek.vishnoi@hotmail.com");
         user.setPassword("password1");

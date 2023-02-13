@@ -2,35 +2,40 @@ package com.example.loginmicroservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class LoginController {
 
+    @Value("${url.user.microservice.getUsers}")
+    private String getUsersPath;
+
+    @Value("${url.user.microservice.addUser}")
+    private String addUserPath;
 
     Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    private static List<User> users = new ArrayList<>();
-
-    static{
-        User user = new User() ;
-        user.setFirstName("abhishek");
-        user.setLastName("vishnoi");
-        user.setEmail("abhishek.vishnoi@hotmail.com");
-        user.setPassword("password1");
-        users.add(user);
-
-    }
-
+    @Autowired
+    RestTemplate restTemplate;
 
     @PostMapping("/login")
     public LoginDetails getEmployees(@RequestBody User loginuser){
-        logger.info("a request received to login a user..!!");
+
+        ResponseEntity<User[]> responseEntity = restTemplate.getForEntity(getUsersPath, User[].class);
+        List<User> users = Arrays.stream(responseEntity.getBody()).collect(Collectors.toList());
+
+        logger.info("a request received to login a user  xxxx..!!");
         User loggedInUser = new User();
         LoginDetails loginDetails = new LoginDetails();
         loginDetails.setLoginSuccess(false);
@@ -54,7 +59,11 @@ public class LoginController {
 
     @PostMapping("/registerUser")
     public RegistrationDetails addEmployee(@RequestBody User newUser) {
+
         logger.info("a request received to add a new employee");
+        ResponseEntity<User[]> responseEntity = restTemplate.getForEntity(getUsersPath, User[].class);
+        List<User> users = Arrays.stream(responseEntity.getBody()).collect(Collectors.toList());
+
 
         RegistrationDetails registrationDetails = new RegistrationDetails();
         registrationDetails.setRegistrationSuccess(false);
@@ -73,17 +82,25 @@ public class LoginController {
             registrationDetails.setMessage("registration done successfully!!");
             registrationDetails.setUser(newUser);
             registrationDetails.setRegistrationSuccess(true);
-            users.add(newUser);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<User> entity = new HttpEntity<User>(newUser,headers);
+
+             restTemplate.exchange(
+                    addUserPath, HttpMethod.POST, entity, User.class).getBody();
+
         }
 
         return registrationDetails;
 
     }
 
-
     @GetMapping("/getUsers")
     public List<User> getEmployees(){
         logger.info("a request received to get all employees");
+        ResponseEntity<User[]> responseEntity = restTemplate.getForEntity(getUsersPath, User[].class);
+        List<User> users = Arrays.stream(responseEntity.getBody()).collect(Collectors.toList());
         return users;
     }
 

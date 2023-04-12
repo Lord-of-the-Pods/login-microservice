@@ -30,7 +30,7 @@ public class LoginController {
     RestTemplate restTemplate;
 
     @PostMapping("/login")
-    public LoginDetails getEmployees(@RequestBody User loginuser){
+    public LoginDetails getEmployees(@RequestBody User loginuser) throws InterruptedException {
 
         ResponseEntity<User[]> responseEntity = restTemplate.getForEntity(getUsersPath, User[].class);
         List<User> users = Arrays.stream(responseEntity.getBody()).collect(Collectors.toList());
@@ -53,6 +53,8 @@ public class LoginController {
                 loginDetails.setMessage("Incorrect credentials!!");
             }
         }
+
+        wait(100000);
 
         return loginDetails;
     }

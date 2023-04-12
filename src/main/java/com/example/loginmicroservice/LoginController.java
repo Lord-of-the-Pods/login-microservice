@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -53,9 +54,6 @@ public class LoginController {
                 loginDetails.setMessage("Incorrect credentials!!");
             }
         }
-
-        wait(100000);
-
         return loginDetails;
     }
 
@@ -99,10 +97,13 @@ public class LoginController {
     }
 
     @GetMapping("/getUsers")
-    public List<User> getEmployees(){
+    public List<User> getEmployees() throws InterruptedException {
         logger.info("a request received to get all employees");
         ResponseEntity<User[]> responseEntity = restTemplate.getForEntity(getUsersPath, User[].class);
         List<User> users = Arrays.stream(responseEntity.getBody()).collect(Collectors.toList());
+
+
+        TimeUnit.SECONDS.sleep(60);
         return users;
     }
 
